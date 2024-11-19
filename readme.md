@@ -1,7 +1,5 @@
 # 2nd InSem 
 
-## Important Topics
-
 ### FS Module
 
 The `fs` module in Node.js provides an API for interacting with the file system. It allows you to perform operations like reading, writing, deleting, and renaming files or directories, both synchronously and asynchronously.
