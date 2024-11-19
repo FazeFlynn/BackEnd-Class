@@ -1131,8 +1131,6 @@ app.listen(5000, () => {
 ### 3. **Server Listening**:
 - **`app.listen(5000)`** starts the Express server and listens for requests on port 5000.
 
----
-
 ### Summary:
 This Express app handles basic **CRUD-like operations** for products:
 - Lists products (`/api/products`).
