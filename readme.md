@@ -574,6 +574,7 @@ Socket.IO is a powerful library for real-time, bidirectional communication betwe
 
 
 ---
+---
 
 ## Events and event Loops
 
@@ -754,6 +755,123 @@ In Node.js, the event loop works similarly but with additional phases, allowing 
 - Asynchronous operations are queued in the **event queue** and handled after the **call stack** is empty.
 - JavaScript uses **microtasks** and **macrotasks** to organize the execution of tasks, ensuring tasks like promises are processed before timers or I/O operations.
 
+---
+---
+
+## Event Emitters
+
+In Node.js, **Event Emitters** are used to handle and emit events. The core module `events` provides the functionality to work with event-driven programming. Event Emitters allow you to create custom events and register listeners (callbacks) that respond when these events are triggered.
+
+#### **Key Concepts:**
+1. **EventEmitter Class:** This is the core class in the `events` module. It allows you to register event listeners and emit events.
+2. **Events:** Events are signals that something has happened in the system. For example, a user logging in or a file being uploaded.
+
+### **How to Use Event Emitters:**
+
+1. **Importing the EventEmitter class:**
+   ```javascript
+   const EventEmitter = require('events');
+   ```
+
+2. **Creating an instance of EventEmitter:**
+   ```javascript
+   const emitter = new EventEmitter();
+   ```
+
+3. **Registering an Event Listener (Subscriber):**
+   Using `on()` or `addListener()` to register event listeners for custom events.
+   ```javascript
+   emitter.on('eventName', (message) => {
+       console.log(`Event triggered: ${message}`);
+   });
+   ```
+
+4. **Emitting an Event (Publisher):**
+   Use `emit()` to trigger the event and pass data to the listeners.
+   ```javascript
+   emitter.emit('eventName', 'Hello, this is a custom event!');
+   ```
+
+### **Example:**
+```javascript
+const EventEmitter = require('events');
+
+// Create an instance of EventEmitter
+const eventEmitter = new EventEmitter();
+
+// Register an event listener for 'greet' event
+eventEmitter.on('greet', (name) => {
+    console.log(`Hello, ${name}!`);
+});
+
+// Emit the 'greet' event with a name as argument
+eventEmitter.emit('greet', 'John');
+```
+
+**Output:**
+```
+Hello, John!
+```
+
+### **Methods of EventEmitter:**
+1. **on(eventName, listener):** Adds a listener for the specified event.
+2. **emit(eventName, ...args):** Emits an event, triggering all the listeners for that event.
+3. **once(eventName, listener):** Adds a listener that will only fire once.
+4. **removeListener(eventName, listener):** Removes a listener for the specified event.
+5. **removeAllListeners(eventName):** Removes all listeners for the specified event.
+
+### **Example with `once()` (Listener that runs only once):**
+```javascript
+const EventEmitter = require('events');
+const eventEmitter = new EventEmitter();
+
+// Listen to 'greet' event but only once
+eventEmitter.once('greet', (name) => {
+    console.log(`Hello, ${name}! This will only run once.`);
+});
+
+eventEmitter.emit('greet', 'Alice');
+eventEmitter.emit('greet', 'Bob');  // This will not trigger the listener
+```
+
+**Output:**
+```
+Hello, Alice! This will only run once.
+```
+
+### **EventEmitter with Error Handling:**
+You can also use Event Emitters to handle errors by emitting an `error` event. If no listeners are attached to the `error` event, Node.js will throw an uncaught exception.
+
+```javascript
+const EventEmitter = require('events');
+const eventEmitter = new EventEmitter();
+
+eventEmitter.on('error', (err) => {
+    console.log(`Error occurred: ${err.message}`);
+});
+
+// Emit error event
+eventEmitter.emit('error', new Error('Something went wrong!'));
+```
+
+**Output:**
+```
+Error occurred: Something went wrong!
+```
+
+### **Summary:**
+- **Event Emitters** are used in Node.js to create custom events and handle asynchronous operations.
+- The `EventEmitter` class allows registering listeners for events and emitting those events.
+- Events can be handled synchronously or asynchronously, making Event Emitters powerful for event-driven applications.
+
+
+
+
+
+
+
+
+---
 ---
 
 ## Fs Module
