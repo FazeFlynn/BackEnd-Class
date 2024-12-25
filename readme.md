@@ -78,6 +78,7 @@ fs.readFile('example.txt', 'utf-8', (err, data) => {
 ```
 
 ---
+---
 
 ## Introduction to Express.js
 
@@ -297,6 +298,7 @@ app.post('/add-user', (req, res) => {
 });
 ```
 
+---
 ---
 
 ## Socket.io
@@ -874,6 +876,7 @@ Error occurred: Something went wrong!
 ---
 ---
 
+
 ## Fs Module
 
 The `fs` (File System) module in Node.js allows you to interact with the file system. It provides both synchronous and asynchronous methods to work with files and directories, such as reading, writing, updating, and deleting files, as well as managing directories.
@@ -1161,7 +1164,7 @@ The `fs` module is essential for working with files and directories in Node.js. 
 
 
 ---
-
+---
 
 ## Middlewares in Express.js
 
@@ -1411,7 +1414,7 @@ app.get('/', (req, res) => {
 
 Middleware functions are an essential part of Express.js, allowing developers to intercept and modify requests, responses, and handle errors. Understanding how to use them properly enables the development of robust and scalable applications by decoupling common tasks like authentication, logging, validation, and error handling.
 
-
+---
 ---
 
 ## Callbacks
@@ -1600,6 +1603,7 @@ To handle callback hell, **Promises** or **Async/Await** can be used to flatten 
 By understanding how to work with callbacks, you can manage asynchronous code effectively, though in modern JavaScript, many developers prefer using **Promises** or **Async/Await** for cleaner, more readable code.
 
 
+---
 ---
 
 ## Routes
@@ -1840,6 +1844,7 @@ This will catch all unmatched routes and send a `404` response.
 
 
 ---
+---
 
 
 ## JWT
@@ -2045,6 +2050,7 @@ app.listen(3000, () => {
 - JWTs are used in web applications for user authentication and authorization, offering statelessness and ease of scaling.
 - Use **HTTP headers** to send JWT tokens and validate them on the server for protected routes.
 
+---
 ---
 
 ## Example (Optional)
@@ -2479,6 +2485,7 @@ A **RESTful API** is an architectural style for building APIs that allows client
 
 
 ---
+---
 
 ## Promises
 A **Promise** is an object representing the eventual completion (or failure) of an asynchronous operation. It allows you to attach callbacks instead of using nested functions, making the code more readable.
@@ -2499,6 +2506,7 @@ myPromise
     .then(result => console.log(result))  // Success: logs "Operation successful!"
     .catch(error => console.log(error));  // Failure: logs "Operation failed!"
 ```
+---
 ---
 
 ## Async/Await
@@ -2547,7 +2555,7 @@ fetchData();
 
 
 ---
-
+---
 
 ## Fetching data with Async await, Promises along with error Handling
 
@@ -2583,6 +2591,7 @@ const fetchData = async () => {
 fetchData();
 ```
 
+---
 ---
 
 ## MongoDb (CRUD operations)
@@ -2769,6 +2778,7 @@ This application demonstrates how to implement **CRUD operations** with **MongoD
 - **Delete** a user (DELETE)
 
 ---
+---
 
 ## Connecting Sql database
 
@@ -2863,7 +2873,7 @@ To connect to a SQL database (such as MySQL, PostgreSQL, or SQLite) in a Node.js
 
 
 ---
-
+---
 
 
 ## OAuth and OAuth2
@@ -2924,6 +2934,7 @@ OAuth 2.0 allows different **grant types** (methods for obtaining an access toke
 
 
 
+---
 ---
 
 
