@@ -1,3 +1,2200 @@
+# End Sem
+
+
+## 1. Introduction to Node.js
+
+Node.js is a JavaScript runtime built on Chrome's V8 engine that allows developers to run JavaScript on the server side. It is used to create scalable, high-performance web applications, APIs, and more.
+
+
+### **Key Features**  
+1. **Event-Driven Architecture**:  
+   Node.js uses a non-blocking, event-driven model, which makes it efficient and suitable for I/O-heavy applications.  
+   Example: Handling multiple requests simultaneously.
+
+2. **Asynchronous and Non-Blocking I/O**:  
+   Operations like file reading or database queries do not block the execution of other code.  
+
+3. **Cross-Platform**:  
+   Node.js can run on major platforms like Windows, Linux, and macOS.
+
+4. **Single-Threaded with Event Loop**:  
+   A single thread handles multiple client requests using an event loop.
+
+5. **Rich Ecosystem (npm)**:  
+   The Node Package Manager (npm) provides access to a vast number of libraries.
+
+
+### **Advantages**
+- **High Performance**: Uses the V8 engine for fast execution.
+- **Scalable**: Handles many connections with a small memory footprint.
+- **Lightweight**: Uses fewer resources compared to traditional server environments.
+- **Real-Time Applications**: Ideal for real-time apps like chat, gaming, or live feeds.
+
+
+### **Types of Applications Built with Node.js**
+1. **Web Applications**: Example: APIs for front-end apps.
+2. **Real-Time Applications**: Example: Chat applications.
+3. **RESTful APIs**: Example: CRUD applications.
+4. **Streaming Applications**: Example: Media streaming apps.
+5. **Command-Line Applications**: Example: CLI tools.
+
+---
+
+### **Simple Example**  
+**Hello World Server**  
+```javascript
+const http = require('http');
+
+// Create a server
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello, World!');
+});
+
+// Start the server on port 3000
+server.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+```
+
+
+
+### **Common Modules in Node.js**
+1. **http**: For creating servers.
+2. **fs**: For file system operations.
+3. **path**: For handling file paths.
+4. **os**: For system information.
+5. **events**: For creating and managing events.
+
+**Example: Using `fs` Module**  
+```javascript
+const fs = require('fs');
+
+// Read a file
+fs.readFile('example.txt', 'utf-8', (err, data) => {
+    if (err) throw err;
+    console.log(data);
+});
+```
+
+---
+
+## Introduction to Express.js
+
+Express.js is a lightweight, unopinionated web application framework for Node.js. It simplifies building web servers and APIs by providing robust features like routing, middleware, and template engines.
+
+
+### **Basic Concepts**
+
+#### 1. **Installation**  
+Run the following command to install Express.js:  
+```bash
+npm install express
+```
+
+#### 2. **Creating a Simple Server**  
+```javascript
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+```
+
+---
+
+### **Core Features**
+
+#### 1. **Routing**  
+Routing determines how an application responds to different HTTP requests.  
+
+**Example**:  
+```javascript
+app.get('/about', (req, res) => res.send('About Page'));
+app.post('/submit', (req, res) => res.send('Form Submitted'));
+app.put('/update', (req, res) => res.send('Resource Updated'));
+app.delete('/delete', (req, res) => res.send('Resource Deleted'));
+```
+
+---
+
+#### 2. **Middleware**  
+Middleware functions are executed sequentially in the request-response cycle.  
+
+**Types**:  
+- **Built-in**: `express.json()`, `express.urlencoded()`
+- **Third-party**: Example: `morgan`, `cors`
+- **Custom**: Created by the developer
+
+**Example**:  
+```javascript
+const logger = (req, res, next) => {
+    console.log(`${req.method} request made to: ${req.url}`);
+    next();
+};
+app.use(logger);
+```
+
+---
+
+#### 3. **Static Files**  
+Serve static files like images, CSS, or JavaScript using `express.static`.  
+
+**Example**:  
+```javascript
+app.use(express.static('public'));
+```
+
+---
+
+#### 4. **Parsing Data**  
+Handle incoming data using built-in middleware:  
+- `express.json()` for JSON data.
+- `express.urlencoded({ extended: true })` for form data.
+
+**Example**:  
+```javascript
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+```
+
+---
+
+### **Intermediate Concepts**
+
+#### 1. **Route Parameters**  
+Use parameters in URLs to handle dynamic data.  
+
+**Example**:  
+```javascript
+app.get('/user/:id', (req, res) => {
+    const userId = req.params.id;
+    res.send(`User ID is: ${userId}`);
+});
+```
+
+#### 2. **Query Parameters**  
+Handle queries like `/search?term=books`.  
+
+**Example**:  
+```javascript
+app.get('/search', (req, res) => {
+    const term = req.query.term;
+    res.send(`Search term: ${term}`);
+});
+```
+
+---
+
+#### 3. **Error Handling**  
+Catch and handle errors using middleware.  
+
+**Example**:  
+```javascript
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+```
+
+---
+
+### **Advanced Concepts**
+
+#### 1. **Router**  
+Separate routes into modules for better organization.  
+
+**Example**:  
+`routes/user.js`:  
+```javascript
+const express = require('express');
+const router = express.Router();
+
+router.get('/', (req, res) => res.send('User Home'));
+router.get('/:id', (req, res) => res.send(`User ID: ${req.params.id}`));
+
+module.exports = router;
+```
+
+`app.js`:  
+```javascript
+const userRoutes = require('./routes/user');
+app.use('/users', userRoutes);
+```
+
+---
+
+#### 2. **Middleware Stacking**  
+Apply multiple middleware functions to a single route.  
+
+**Example**:  
+```javascript
+const middleware1 = (req, res, next) => { console.log('Middleware 1'); next(); };
+const middleware2 = (req, res, next) => { console.log('Middleware 2'); next(); };
+
+app.get('/stack', [middleware1, middleware2], (req, res) => res.send('Stacked Middleware'));
+```
+
+---
+
+#### 3. **Template Engines**  
+Render dynamic HTML using template engines like EJS, Pug, or Handlebars.  
+
+**Example (EJS)**:  
+```bash
+npm install ejs
+```
+```javascript
+app.set('view engine', 'ejs');
+app.get('/welcome', (req, res) => {
+    res.render('index', { name: 'John' });
+});
+```
+
+`views/index.ejs`:  
+```html
+<h1>Welcome, <%= name %>!</h1>
+```
+
+---
+
+#### 4. **Authentication**  
+Use libraries like `passport` or `jsonwebtoken` for user authentication.  
+
+**Example (JWT)**:  
+```javascript
+const jwt = require('jsonwebtoken');
+
+app.post('/login', (req, res) => {
+    const user = { id: 1, username: 'john' }; // Example user
+    const token = jwt.sign(user, 'secretKey');
+    res.json({ token });
+});
+```
+
+
+#### 5. **Connecting to Databases**  
+Express can interact with databases like MongoDB, MySQL, or PostgreSQL.  
+
+**Example (MongoDB)**:  
+```javascript
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/myapp', { useNewUrlParser: true, useUnifiedTopology: true });
+
+const userSchema = new mongoose.Schema({ name: String });
+const User = mongoose.model('User', userSchema);
+
+app.post('/add-user', (req, res) => {
+    const newUser = new User({ name: req.body.name });
+    newUser.save()
+        .then(() => res.send('User added'))
+        .catch(err => res.status(400).send(err));
+});
+```
+
+---
+
+## Socket.io
+
+
+### **Socket.IO: A Comprehensive Overview**
+
+**Definition**:  
+Socket.IO is a JavaScript library that enables real-time, bidirectional communication between web clients (browsers) and servers. It uses WebSockets as a transport protocol but falls back to other methods like long-polling when WebSockets are not available.
+
+---
+
+### **Key Concepts**
+
+#### 1. **Real-Time Communication**  
+Socket.IO allows sending and receiving messages in real-time, making it ideal for applications like chat apps, live notifications, or multiplayer games.
+
+---
+
+### **Installation**
+
+To use Socket.IO in your Node.js application, you need to install both the server and client libraries.
+
+**Install server-side**:  
+```bash
+npm install socket.io
+```
+
+**Install client-side**:  
+For browsers, you can include Socket.IO via a CDN or install it via npm.
+
+```html
+<script src="/socket.io/socket.io.js"></script>
+```
+
+Or if using npm:  
+```bash
+npm install socket.io-client
+```
+
+---
+
+### **Basic Example**
+
+#### 1. **Server-Side (Node.js)**
+
+```javascript
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
+// Set up the server
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server); // Initialize Socket.IO
+
+// Listen for connection event
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    
+    // Listen for a custom event from the client
+    socket.on('message', (data) => {
+        console.log('Received message:', data);
+    });
+    
+    // Emit a message to the client
+    socket.emit('welcome', 'Hello, welcome to the server!');
+    
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+// Start the server
+server.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+```
+
+#### 2. **Client-Side (HTML + JavaScript)**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Example</title>
+</head>
+<body>
+    <h1>Socket.IO Chat</h1>
+    <button id="sendBtn">Send Message</button>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Listen for messages from the server
+        socket.on('welcome', (message) => {
+            alert(message);
+        });
+
+        // Emit a message when the button is clicked
+        document.getElementById('sendBtn').onclick = () => {
+            socket.emit('message', 'Hello, server!');
+        };
+    </script>
+</body>
+</html>
+```
+
+---
+
+### **Socket.IO Features**
+
+#### 1. **Bidirectional Communication**  
+With Socket.IO, data can be sent both from the client to the server and from the server to the client in real-time.
+
+**Example**:  
+- Server emits: `socket.emit('event', data)`
+- Client listens: `socket.on('event', callback)`
+
+---
+
+#### 2. **Events**  
+Socket.IO uses an event-based model for communication. You can listen for specific events and send custom events.
+
+**Server-side**:  
+```javascript
+socket.on('chat message', (msg) => {
+    console.log(msg);
+});
+```
+
+**Client-side**:  
+```javascript
+socket.emit('chat message', 'Hello server!');
+```
+
+---
+
+#### 3. **Broadcasting**  
+You can send messages to all clients except the sender.
+
+**Example**:
+```javascript
+socket.broadcast.emit('new user', 'A new user has joined!');
+```
+
+---
+
+#### 4. **Namespaces**  
+Namespaces allow you to separate logic into different channels within a Socket.IO server.
+
+**Server-side**:
+```javascript
+const nsp = io.of('/chat');
+nsp.on('connection', (socket) => {
+    console.log('A user connected to /chat');
+    socket.emit('welcome', 'Welcome to the chat namespace!');
+});
+```
+
+**Client-side**:
+```javascript
+const socket = io('/chat');
+```
+
+---
+
+#### 5. **Rooms**  
+Rooms are subsets of clients within a namespace. A client can join or leave a room, enabling communication between specific groups of users.
+
+**Server-side**:
+```javascript
+socket.join('room1');
+io.to('room1').emit('message', 'This is a message for room1');
+```
+
+**Client-side**:
+```javascript
+socket.on('message', (message) => {
+    console.log(message);
+});
+```
+
+---
+
+#### 6. **Reconnection**  
+Socket.IO handles automatic reconnection if the connection is lost.
+
+```javascript
+const socket = io({
+    reconnection: true,
+    reconnectionAttempts: 5,  // Number of reconnection attempts
+    reconnectionDelay: 1000   // Delay between reconnections in ms
+});
+```
+
+---
+
+#### 7. **Custom Handshake**  
+Socket.IO provides an option to add custom handshake data during the connection process. This can be used for authentication or providing session information.
+
+**Server-side**:
+```javascript
+io.use((socket, next) => {
+    const token = socket.handshake.query.token;
+    if (token === 'valid-token') {
+        return next();
+    }
+    return next(new Error('Authentication error'));
+});
+```
+
+---
+
+### **Use Cases for Socket.IO**
+
+- **Real-Time Chat Applications**: Real-time messaging and notifications.
+- **Collaborative Tools**: Apps where multiple users interact in real-time (e.g., Google Docs).
+- **Live Sports Updates**: Delivering real-time match scores.
+- **Online Games**: Multiplayer games with real-time interactions.
+
+---
+
+### **Advanced Features**
+
+#### 1. **Socket.IO with Express**  
+Socket.IO can be integrated into an Express app to enable real-time capabilities alongside traditional HTTP routes.
+
+**Example**:
+```javascript
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Express routes
+app.get('/', (req, res) => {
+    res.send('Hello from Express!');
+});
+
+// Socket.IO events
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
+
+server.listen(3000, () => {
+    console.log('Server running on http://localhost:3000');
+});
+```
+
+#### 2. **Scaling Socket.IO**  
+When scaling a Socket.IO app, you need to use a message broker (like Redis) to handle communication between multiple server instances.
+
+**Example** (using Redis):
+```bash
+npm install socket.io-redis
+```
+```javascript
+const socketio = require('socket.io');
+const redisAdapter = require('socket.io-redis');
+const io = socketio(server);
+
+io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
+```
+
+
+### **Conclusion**
+
+Socket.IO is a powerful library for real-time, bidirectional communication between clients and servers. It's easy to use and highly customizable, making it ideal for applications like live chat, gaming, or real-time collaboration tools. By leveraging its event-based model, broadcasting, and room functionalities, you can build scalable, real-time web applications with ease.
+
+
+## Events and event Loops
+
+JavaScript is often described as a non-blocking, asynchronous language. A key concept behind this is the **Event Loop**, which is responsible for handling asynchronous events in a single-threaded execution model. To understand this, we need to first explore what events are and how the event loop works.
+
+
+### **1. What are Events?**
+
+In JavaScript, an **event** is an action or occurrence that happens in the system you are programming, which the program can respond to. Events can come from various sources, such as:
+
+- User interactions (click, hover, input, etc.)
+- System events (like timers, network responses)
+- Events from other JavaScript code or libraries
+
+Events are typically handled using **event listeners**, which are functions that respond to specific events.
+
+#### **Example of Events**:
+
+**Button Click Event**:
+```html
+<button id="myButton">Click Me!</button>
+
+<script>
+    const button = document.getElementById('myButton');
+
+    // Event listener for a button click
+    button.addEventListener('click', function() {
+        alert('Button was clicked!');
+    });
+</script>
+```
+
+In this example, the `click` event is fired when the user clicks the button, and the event listener executes a function in response to that event.
+
+---
+
+### **2. Event Loop in JavaScript**
+
+The **Event Loop** is a fundamental part of JavaScript's concurrency model, allowing asynchronous execution while maintaining a single-threaded environment. It continuously checks if there are any tasks in the **event queue** that are ready to be executed. 
+
+#### **How the Event Loop Works:**
+
+JavaScript has a **single thread** for executing code, meaning it can only execute one task at a time. However, JavaScript uses asynchronous operations, such as `setTimeout`, network requests, or I/O operations, which don't block the main thread. When such tasks are performed, JavaScript hands over the control to the browser or Node.js, which executes them asynchronously and returns the results back to JavaScript. The event loop is responsible for managing this process.
+
+##### **Steps Involved in the Event Loop**:
+1. **Call Stack**: JavaScript first executes code that’s currently on the call stack.
+2. **Event Queue**: Asynchronous code (such as setTimeout, I/O tasks) is moved to the event queue once it's ready to be processed.
+3. **Event Loop**: The event loop checks if the call stack is empty. If it is, it moves tasks from the event queue to the call stack for execution.
+4. **Web APIs**: For asynchronous operations like `setTimeout` or network requests, these are handled by the browser or Node.js and then moved back to the event queue when completed.
+
+---
+
+### **3. Call Stack and Event Queue**
+
+To better understand how the event loop works, we need to look at the **Call Stack** and **Event Queue**.
+
+#### **Call Stack**:
+- The **Call Stack** is where JavaScript keeps track of the function calls that are being executed.
+- When a function is invoked, it is pushed onto the call stack. When a function finishes executing, it is popped off the stack.
+
+#### **Event Queue**:
+- The **Event Queue** (or message queue) is where asynchronous code resides when it is ready to be executed after the call stack is empty.
+- It contains events that need to be handled, such as I/O operations, network requests, or timers.
+
+---
+
+### **4. Example of the Event Loop in Action**
+
+```javascript
+console.log('Start');
+
+setTimeout(() => {
+  console.log('Middle');
+}, 0);
+
+console.log('End');
+```
+
+#### **What Happens**:
+1. `'Start'` is printed to the console first (since it's synchronous).
+2. The `setTimeout` function is called, but instead of executing immediately, it’s placed in the event queue with a delay of `0` milliseconds.
+3. `'End'` is printed next (again, it's synchronous).
+4. The event loop picks up the `setTimeout` callback from the event queue and executes it, printing `'Middle'`.
+
+**Expected Output**:
+```
+Start
+End
+Middle
+```
+
+This behavior demonstrates how asynchronous operations are delayed until the call stack is empty, and the event loop picks them up from the queue.
+
+---
+
+### **5. Types of Asynchronous Events in JavaScript**
+
+#### **Timers** (e.g., `setTimeout`, `setInterval`):
+- `setTimeout` allows us to schedule a function to run after a specified delay.
+- `setInterval` repeats the execution of a function at regular intervals.
+
+**Example**:
+```javascript
+setTimeout(() => {
+  console.log('Executed after 2 seconds');
+}, 2000);
+```
+
+#### **Promises**:
+- Promises represent the completion (or failure) of an asynchronous operation. They are used to handle asynchronous results in a more readable way than callbacks.
+
+**Example**:
+```javascript
+let promise = new Promise((resolve, reject) => {
+    setTimeout(() => resolve('Data received!'), 1000);
+});
+
+promise.then(result => console.log(result)); // Logs: 'Data received!' after 1 second
+```
+
+#### **Events**:
+- Events like `click`, `keydown`, etc., are pushed to the event queue when triggered and processed by the event loop.
+
+---
+
+### **6. Microtasks and Macrotasks**
+
+JavaScript categorizes asynchronous tasks into **microtasks** and **macrotasks**.
+
+- **Macrotasks** include tasks like `setTimeout`, `setInterval`, I/O operations.
+- **Microtasks** include promises and mutation observers.
+
+**Execution Order**:
+1. The event loop processes all **macrotasks**.
+2. After each macrotask, it checks the **microtask queue** and processes all microtasks before moving back to the event queue.
+
+**Example**:
+```javascript
+setTimeout(() => {
+  console.log('Macrotask');
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('Microtask');
+});
+```
+
+**Expected Output**:
+```
+Microtask
+Macrotask
+```
+
+---
+
+### **7. The Event Loop in Node.js**
+
+In Node.js, the event loop works similarly but with additional phases, allowing non-blocking I/O operations.
+
+- **Timers Phase**: Executes callbacks from `setTimeout` and `setInterval`.
+- **I/O Callbacks Phase**: Handles I/O events like file system or networking operations.
+- **Poll Phase**: The event loop checks the event queue for pending events.
+- **Check Phase**: Executes `setImmediate` callbacks.
+- **Close Callbacks Phase**: Handles any close event handlers like `socket.on('close')`.
+
+
+### **8. Real-Life Use Cases of Events and Event Loops**
+
+1. **Real-time Applications**: Games, chats, or live notifications where multiple users interact.
+2. **Non-blocking I/O**: File reading, database queries, and network requests that should not block the execution of the main program.
+3. **Event-Driven Programming**: Handling events such as clicks, key presses, or network responses in browsers and servers.
+
+
+### **Summary**
+
+- **Events** are actions that occur in the system that JavaScript can respond to.
+- The **Event Loop** manages asynchronous code, ensuring JavaScript runs in a non-blocking, single-threaded environment.
+- Asynchronous operations are queued in the **event queue** and handled after the **call stack** is empty.
+- JavaScript uses **microtasks** and **macrotasks** to organize the execution of tasks, ensuring tasks like promises are processed before timers or I/O operations.
+
+---
+
+## Fs Module
+
+The `fs` (File System) module in Node.js allows you to interact with the file system. It provides both synchronous and asynchronous methods to work with files and directories, such as reading, writing, updating, and deleting files, as well as managing directories.
+
+#### **Key Features**:
+- Works with both **synchronous** and **asynchronous** methods.
+- Supports various file operations like creating, deleting, and updating files.
+- Works with directories, buffers, and streams.
+
+---
+
+### **1. Importing the `fs` Module**
+
+```javascript
+const fs = require('fs');
+```
+
+This imports the `fs` module so you can use its methods.
+
+---
+
+### **2. Reading Files**
+
+The `fs` module provides methods to read files. The most common methods are:
+
+#### **Asynchronous Read - `fs.readFile()`**:
+```javascript
+fs.readFile('example.txt', 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading file:', err);
+        return;
+    }
+    console.log(data); // Outputs the content of example.txt
+});
+```
+- **`fs.readFile(path, encoding, callback)`**: Reads the file at the given path with the specified encoding asynchronously.
+- **`utf8`** specifies the encoding to return the content as a string.
+
+#### **Synchronous Read - `fs.readFileSync()`**:
+```javascript
+try {
+    const data = fs.readFileSync('example.txt', 'utf8');
+    console.log(data); // Outputs the content of example.txt
+} catch (err) {
+    console.error('Error reading file:', err);
+}
+```
+- **`fs.readFileSync(path, encoding)`**: Reads the file synchronously, blocking the execution until the file is read.
+
+---
+
+### **3. Writing to Files**
+
+The `fs` module allows you to write data to a file.
+
+#### **Asynchronous Write - `fs.writeFile()`**:
+```javascript
+fs.writeFile('example.txt', 'Hello, Node.js!', (err) => {
+    if (err) {
+        console.error('Error writing to file:', err);
+        return;
+    }
+    console.log('File written successfully');
+});
+```
+- **`fs.writeFile(path, data, callback)`**: Writes data to a file asynchronously. If the file doesn't exist, it will be created. If it exists, it will be overwritten.
+
+#### **Synchronous Write - `fs.writeFileSync()`**:
+```javascript
+try {
+    fs.writeFileSync('example.txt', 'Hello, Node.js!');
+    console.log('File written successfully');
+} catch (err) {
+    console.error('Error writing to file:', err);
+}
+```
+- **`fs.writeFileSync(path, data)`**: Writes data synchronously to a file.
+
+---
+
+### **4. Appending Data to a File**
+
+#### **Asynchronous Append - `fs.appendFile()`**:
+```javascript
+fs.appendFile('example.txt', '\nAppended text', (err) => {
+    if (err) {
+        console.error('Error appending to file:', err);
+        return;
+    }
+    console.log('Data appended successfully');
+});
+```
+- **`fs.appendFile(path, data, callback)`**: Appends data to a file. If the file does not exist, it is created.
+
+#### **Synchronous Append - `fs.appendFileSync()`**:
+```javascript
+try {
+    fs.appendFileSync('example.txt', '\nAppended text');
+    console.log('Data appended successfully');
+} catch (err) {
+    console.error('Error appending to file:', err);
+}
+```
+- **`fs.appendFileSync(path, data)`**: Appends data synchronously.
+
+---
+
+### **5. Deleting Files**
+
+#### **Asynchronous Delete - `fs.unlink()`**:
+```javascript
+fs.unlink('example.txt', (err) => {
+    if (err) {
+        console.error('Error deleting file:', err);
+        return;
+    }
+    console.log('File deleted successfully');
+});
+```
+- **`fs.unlink(path, callback)`**: Asynchronously deletes the file at the specified path.
+
+#### **Synchronous Delete - `fs.unlinkSync()`**:
+```javascript
+try {
+    fs.unlinkSync('example.txt');
+    console.log('File deleted successfully');
+} catch (err) {
+    console.error('Error deleting file:', err);
+}
+```
+- **`fs.unlinkSync(path)`**: Synchronously deletes the file at the specified path.
+
+---
+
+### **6. Checking File Information**
+
+#### **Asynchronous File Stats - `fs.stat()`**:
+```javascript
+fs.stat('example.txt', (err, stats) => {
+    if (err) {
+        console.error('Error retrieving file stats:', err);
+        return;
+    }
+    console.log(stats); // Outputs file stats, including size, creation time, etc.
+});
+```
+- **`fs.stat(path, callback)`**: Retrieves the stats of a file or directory asynchronously.
+
+#### **Synchronous File Stats - `fs.statSync()`**:
+```javascript
+try {
+    const stats = fs.statSync('example.txt');
+    console.log(stats); // Outputs file stats
+} catch (err) {
+    console.error('Error retrieving file stats:', err);
+}
+```
+- **`fs.statSync(path)`**: Retrieves the stats of a file or directory synchronously.
+
+---
+
+### **7. Directory Operations**
+
+#### **Reading a Directory - `fs.readdir()`**:
+```javascript
+fs.readdir('./', (err, files) => {
+    if (err) {
+        console.error('Error reading directory:', err);
+        return;
+    }
+    console.log(files); // Outputs an array of files in the current directory
+});
+```
+- **`fs.readdir(path, callback)`**: Reads the contents of a directory asynchronously.
+
+#### **Synchronous Directory Read - `fs.readdirSync()`**:
+```javascript
+try {
+    const files = fs.readdirSync('./');
+    console.log(files); // Outputs an array of files in the current directory
+} catch (err) {
+    console.error('Error reading directory:', err);
+}
+```
+- **`fs.readdirSync(path)`**: Reads the contents of a directory synchronously.
+
+#### **Creating a Directory - `fs.mkdir()`**:
+```javascript
+fs.mkdir('newDir', { recursive: true }, (err) => {
+    if (err) {
+        console.error('Error creating directory:', err);
+        return;
+    }
+    console.log('Directory created successfully');
+});
+```
+- **`fs.mkdir(path, options, callback)`**: Creates a new directory. The `{ recursive: true }` option creates directories recursively if they don't exist.
+
+#### **Synchronous Directory Creation - `fs.mkdirSync()`**:
+```javascript
+try {
+    fs.mkdirSync('newDir', { recursive: true });
+    console.log('Directory created successfully');
+} catch (err) {
+    console.error('Error creating directory:', err);
+}
+```
+- **`fs.mkdirSync(path, options)`**: Creates a directory synchronously.
+
+#### **Deleting a Directory - `fs.rmdir()`**:
+```javascript
+fs.rmdir('newDir', (err) => {
+    if (err) {
+        console.error('Error deleting directory:', err);
+        return;
+    }
+    console.log('Directory deleted successfully');
+});
+```
+- **`fs.rmdir(path, callback)`**: Deletes an empty directory asynchronously.
+
+#### **Synchronous Directory Deletion - `fs.rmdirSync()`**:
+```javascript
+try {
+    fs.rmdirSync('newDir');
+    console.log('Directory deleted successfully');
+} catch (err) {
+    console.error('Error deleting directory:', err);
+}
+```
+- **`fs.rmdirSync(path)`**: Deletes an empty directory synchronously.
+
+---
+
+### **8. File System Streams (Advanced)**
+
+Node.js also supports **streams**, which allow for handling large files or data efficiently without loading everything into memory at once.
+
+#### **File Read Stream - `fs.createReadStream()`**:
+```javascript
+const readStream = fs.createReadStream('example.txt', 'utf8');
+readStream.on('data', (chunk) => {
+    console.log('Reading chunk:', chunk); // Outputs each chunk of the file
+});
+readStream.on('end', () => {
+    console.log('File reading finished');
+});
+```
+
+#### **File Write Stream - `fs.createWriteStream()`**:
+```javascript
+const writeStream = fs.createWriteStream('example.txt', 'utf8');
+writeStream.write('Some new text to write');
+writeStream.end(); // Finish writing
+```
+
+Streams provide better performance and are especially useful when working with large files.
+
+
+### **Summary of fs Methods:**
+
+| Method                | Description                                                 | Async/Sync   |
+|-----------------------|-------------------------------------------------------------|--------------|
+| `fs.readFile()`        | Reads a file asynchronously.                                | Asynchronous |
+| `fs.readFileSync()`    | Reads a file synchronously.                                 | Synchronous  |
+| `fs.writeFile()`       | Writes data to a file asynchronously.                       | Asynchronous |
+| `fs.writeFileSync()`   | Writes data to a file synchronously.                        | Synchronous  |
+| `fs.appendFile()`      | Appends data to a file asynchronously.                      | Asynchronous |
+| `fs.appendFileSync()`  | Appends data to a file synchronously.                       | Synchronous  |
+| `fs.unlink()`          | Deletes a file asynchronously.                              | Asynchronous |
+| `fs.unlinkSync()`      | Deletes a file synchronously.                               | Synchronous  |
+| `fs.stat()`            | Retrieves stats of a file or directory asynchronously.      | Asynchronous |
+| `fs.statSync()`        | Retrieves stats of a file or directory synchronously.       | Synchronous  |
+| `fs.readdir()`         | Reads the contents of a directory asynchronously.           | Asynchronous |
+| `fs.readdirSync()`     | Reads the contents of a directory synchronously.            | Synchronous  |
+| `fs.mkdir()`           | Creates a new directory asynchronously.                     | Asynchronous |
+| `fs.mkdirSync()`       | Creates a new directory synchronously.                      | Synchronous  |
+| `fs.rmdir()`           | Deletes an empty directory asynchronously.                  | Asynchronous |
+| `fs.rmdirSync()`       | Deletes an empty directory synchronously.                   | Synchronous  |
+
+
+### **Conclusion**
+
+The `fs` module is essential for working with files and directories in Node.js. It provides a variety of methods to perform both synchronous and asynchronous operations, allowing you to efficiently handle file input/output tasks. The asynchronous methods are often used in real-world applications to avoid blocking the main thread, improving performance and scalability.
+
+
+---
+
+
+## Middlewares in Express.js
+
+In Express.js, middleware functions are used to process requests before they reach the route handlers. These functions can modify the request object, the response object, or terminate the request-response cycle entirely. Middleware can be used for various purposes, such as logging, authentication, error handling, data validation, and more.
+
+
+### **What is Middleware?**
+
+Middleware is a function that receives the request (`req`), the response (`res`), and a `next` function as arguments. The `next` function is used to pass control to the next middleware in the stack. Middleware functions can either terminate the request-response cycle by sending a response or call `next()` to pass control to the next middleware.
+
+---
+
+### **Types of Middleware**
+
+1. **Application-Level Middleware**: This middleware is bound to the app and applies to all or specific routes of an application.
+2. **Router-Level Middleware**: This middleware is bound to specific routers and applies only to routes handled by that router.
+3. **Built-In Middleware**: Express provides some built-in middleware functions like `express.static()` to serve static files.
+4. **Third-Party Middleware**: Middleware provided by external libraries, such as `body-parser`, `morgan`, and `cors`.
+5. **Error-Handling Middleware**: A special type of middleware used for handling errors.
+
+---
+
+### **Basic Middleware Example**
+
+```javascript
+const express = require('express');
+const app = express();
+
+// Example of a basic middleware function
+app.use((req, res, next) => {
+    console.log('Middleware executed');
+    next(); // Pass control to the next middleware
+});
+
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+```
+- The middleware function logs "Middleware executed" to the console and then calls `next()` to pass control to the next handler.
+
+---
+
+### **Application-Level Middleware**
+
+Middleware can be applied to all routes or specific routes of the application.
+
+#### **Apply Middleware to All Routes**
+
+```javascript
+app.use((req, res, next) => {
+    console.log('This middleware runs for all routes');
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+app.get('/about', (req, res) => {
+    res.send('About Page');
+});
+```
+
+#### **Apply Middleware to Specific Routes**
+
+```javascript
+app.use('/about', (req, res, next) => {
+    console.log('Middleware runs only for /about');
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+app.get('/about', (req, res) => {
+    res.send('About Page');
+});
+```
+- The middleware for `/about` is applied only when the `/about` route is hit.
+
+---
+
+### **Router-Level Middleware**
+
+Express allows you to define middleware for specific routers (i.e., a set of routes). This is especially useful when handling multiple related routes.
+
+#### **Using Router-Level Middleware**
+
+```javascript
+const express = require('express');
+const app = express();
+const router = express.Router();
+
+// Apply middleware only to the router
+router.use((req, res, next) => {
+    console.log('Router-level middleware');
+    next();
+});
+
+// Define routes under the router
+router.get('/', (req, res) => {
+    res.send('Router Home');
+});
+
+router.get('/about', (req, res) => {
+    res.send('Router About');
+});
+
+// Use the router for routes starting with /api
+app.use('/api', router);
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+```
+- Here, the router-level middleware is applied to routes under `/api`.
+
+---
+
+### **Built-In Middleware**
+
+Express includes several built-in middleware functions to handle common tasks like serving static files, parsing request bodies, etc.
+
+#### **Serving Static Files**
+
+```javascript
+app.use(express.static('public')); // Serve files in 'public' folder as static assets
+```
+
+#### **Body Parsing Middleware**
+
+```javascript
+app.use(express.json()); // Middleware for parsing JSON request bodies
+app.use(express.urlencoded({ extended: true })); // Middleware for parsing URL-encoded request bodies
+```
+
+---
+
+### **Third-Party Middleware**
+
+You can use third-party middleware for common tasks such as logging, security, etc.
+
+#### **Example: Using `morgan` for Request Logging**
+
+First, install `morgan`:
+
+```bash
+npm install morgan
+```
+
+Then, use it in your app:
+
+```javascript
+const morgan = require('morgan');
+
+app.use(morgan('dev')); // Logs requests in the 'dev' format
+```
+
+---
+
+### **Error-Handling Middleware**
+
+Error-handling middleware is used to catch and handle errors that occur in the application. It is defined with four parameters: `err`, `req`, `res`, and `next`.
+
+#### **Example: Error-Handling Middleware**
+
+```javascript
+app.use((req, res, next) => {
+    const error = new Error('Something went wrong');
+    error.status = 500;
+    next(error); // Pass the error to the error-handling middleware
+});
+
+app.use((err, req, res, next) => {
+    res.status(err.status || 500).send({ error: err.message });
+});
+```
+- The error-handling middleware will catch any errors and respond with a custom error message.
+
+---
+
+### **Order of Middleware Execution**
+
+The order in which you define middleware is important. Middleware is executed in the order it is defined.
+
+- **Global Middleware**: Middleware defined using `app.use()` before route handlers runs for all routes.
+- **Route-Specific Middleware**: Middleware defined with specific routes or routers will run only for those routes.
+- **Error-Handling Middleware**: Error-handling middleware should be defined after all other middleware and routes to catch errors from previous middleware.
+
+---
+
+### **Chaining Middleware**
+
+You can chain multiple middleware functions for complex logic.
+
+```javascript
+app.use((req, res, next) => {
+    console.log('First middleware');
+    next();
+});
+
+app.use((req, res, next) => {
+    console.log('Second middleware');
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.send('Hello, Middleware!');
+});
+```
+- Both middleware functions are executed in order before the route handler.
+
+---
+
+### **Custom Middleware Example**
+
+A simple middleware that logs the HTTP method and request URL:
+
+```javascript
+function logRequest(req, res, next) {
+    console.log(`${req.method} request to ${req.url}`);
+    next();
+}
+
+app.use(logRequest);
+
+app.get('/', (req, res) => {
+    res.send('Home Page');
+});
+```
+- This middleware logs each request's HTTP method and URL.
+
+
+### **Summary of Middleware Concepts**
+
+- **Middleware** is a function that processes the request and response objects in the request-response cycle.
+- **Types**: Application-level, Router-level, Built-in, Third-party, and Error-handling middleware.
+- **Order of Execution**: Middleware is executed in the order it is defined.
+- **Chaining**: You can chain multiple middleware functions for complex logic.
+- **Error-handling**: Special middleware to handle errors in your application.
+
+
+### **Conclusion**
+
+Middleware functions are an essential part of Express.js, allowing developers to intercept and modify requests, responses, and handle errors. Understanding how to use them properly enables the development of robust and scalable applications by decoupling common tasks like authentication, logging, validation, and error handling.
+
+
+---
+
+## Callbacks
+
+
+A **callback** is a function that is passed into another function as an argument and is executed after the completion of that function. Callbacks are widely used in asynchronous programming to handle operations like reading files, making network requests, or any other tasks that take time to complete.
+
+---
+
+### **What is a Callback?**
+
+A **callback function** is a function that you pass as an argument to another function. The second function can call back (execute) the passed function at a later point in time, typically once it finishes its task.
+
+#### **Simple Example of Callback**
+
+```javascript
+function greet(name, callback) {
+    console.log('Hello, ' + name);
+    callback(); // Calling the callback function
+}
+
+function sayGoodbye() {
+    console.log('Goodbye!');
+}
+
+// Using callback
+greet('Alice', sayGoodbye);
+```
+
+**Output:**
+```
+Hello, Alice
+Goodbye!
+```
+
+In this example, `sayGoodbye` is passed as a callback to `greet`, and is called after the greeting message is printed.
+
+---
+
+### **Synchronous Callback**
+
+A **synchronous callback** is executed immediately after the parent function completes its operation. It happens in the same thread and blocks the rest of the code until it's done.
+
+#### **Example of Synchronous Callback**
+
+```javascript
+function fetchData(callback) {
+    console.log('Fetching data...');
+    callback(); // callback is called after the fetchData is done
+}
+
+fetchData(() => {
+    console.log('Data fetched!');
+});
+```
+
+**Output:**
+```
+Fetching data...
+Data fetched!
+```
+
+In the above example, the callback function is executed immediately after the parent function finishes, without any delay.
+
+---
+
+### **Asynchronous Callback**
+
+An **asynchronous callback** is used when an operation is performed that takes time (e.g., reading a file, making an API call). The callback is executed only after the operation completes, without blocking the rest of the code from running.
+
+#### **Example of Asynchronous Callback (setTimeout)**
+
+```javascript
+console.log('Start');
+
+setTimeout(() => {
+    console.log('This is a delayed message');
+}, 2000);
+
+console.log('End');
+```
+
+**Output:**
+```
+Start
+End
+This is a delayed message
+```
+
+In this example, the `setTimeout` function is asynchronous. The message "This is a delayed message" is printed after a delay of 2 seconds, while the rest of the code continues to execute without waiting for it.
+
+---
+
+### **Callback Functions with Error Handling**
+
+In many asynchronous operations, callbacks are used for handling errors. This pattern is called the **Error-First Callback** or **Node.js Callback Convention**, where the first argument is reserved for an error (if any), and the second is for the result.
+
+#### **Example of Error-First Callback**
+
+```javascript
+function readFile(filename, callback) {
+    if (filename === '') {
+        callback('Error: Filename cannot be empty', null);
+    } else {
+        callback(null, 'File content here');
+    }
+}
+
+readFile('data.txt', (error, result) => {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log(result);
+    }
+});
+```
+
+**Output:**
+```
+File content here
+```
+
+If an error occurs (such as a missing filename), the error will be passed to the callback. If everything works, the result is passed.
+
+---
+
+### **Callback Hell (Pyramid of Doom)**
+
+A problem that arises from the extensive use of callbacks, especially in asynchronous programming, is known as **callback hell**. This happens when you nest multiple callbacks inside each other, which can make your code hard to read and maintain.
+
+#### **Example of Callback Hell**
+
+```javascript
+doSomething((err, result1) => {
+    if (err) {
+        console.log(err);
+    } else {
+        doSomethingElse(result1, (err, result2) => {
+            if (err) {
+                console.log(err);
+            } else {
+                doAnotherThing(result2, (err, result3) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Final result:', result3);
+                    }
+                });
+            }
+        });
+    }
+});
+```
+
+This kind of nested callback structure leads to hard-to-maintain and error-prone code. 
+
+### **Handling Callback Hell with Promises or Async/Await**
+
+To handle callback hell, **Promises** or **Async/Await** can be used to flatten the structure and make it more readable.
+
+---
+
+### **Benefits of Using Callbacks**
+
+1. **Handling Asynchronous Operations**: Callbacks are ideal for managing asynchronous tasks, such as handling I/O operations, network requests, and timers.
+2. **Non-blocking Code**: Callbacks allow code to continue running while waiting for the completion of time-consuming tasks.
+3. **Custom Logic**: Callbacks enable custom logic to be executed after certain actions are completed.
+
+---
+
+### **Drawbacks of Callbacks**
+
+1. **Callback Hell**: Nested callbacks can lead to unreadable and difficult-to-maintain code.
+2. **Error Handling**: It can sometimes be difficult to handle errors properly in deeply nested callbacks.
+
+---
+
+### **Summary of Callbacks**
+
+- **A callback** is a function passed into another function, which is invoked after some operations are completed.
+- **Synchronous callbacks** are executed immediately.
+- **Asynchronous callbacks** are executed after a delay, allowing the program to continue without waiting.
+- **Error-first callbacks** follow a common pattern, where the first argument is for errors.
+- Callbacks can sometimes lead to **callback hell** in asynchronous operations, but this can be mitigated by using **Promises** or **Async/Await**.
+
+By understanding how to work with callbacks, you can manage asynchronous code effectively, though in modern JavaScript, many developers prefer using **Promises** or **Async/Await** for cleaner, more readable code.
+
+
+---
+
+## Routes
+
+
+In web development, a **route** refers to a specific path or URL that a web server listens for, and performs a specific action or returns data when that path is accessed. Routes are essential for defining the different endpoints of an application, and they map requests to specific functions that handle the logic associated with those routes.
+
+In the context of Node.js with **Express.js**, a route is typically defined for HTTP requests such as `GET`, `POST`, `PUT`, `DELETE`, etc., and these routes define how the server responds to different requests.
+
+
+### **Types of Routes**
+
+Routes are categorized based on the HTTP method they respond to and the URL pattern they match. These include:
+
+1. **GET** Route: Used to request data from the server.
+2. **POST** Route: Used to submit data to the server (e.g., creating new data).
+3. **PUT** Route: Used to update existing data on the server.
+4. **DELETE** Route: Used to delete data from the server.
+5. **PATCH** Route: Used to apply partial updates to data.
+6. **OPTIONS** Route: Used to return the allowed HTTP methods for a particular URL.
+
+Each route is defined with a **URL pattern** and the associated handler function that executes when a request to that pattern is made.
+
+---
+
+### **Basic Route Syntax in Express.js**
+
+In Express.js, you can define routes using the following syntax:
+
+```javascript
+// For GET requests
+app.get('/path', (req, res) => {
+    res.send('Hello World');
+});
+
+// For POST requests
+app.post('/path', (req, res) => {
+    res.send('Data received');
+});
+```
+
+In the example above:
+- `app.get('/path', handler)` responds to **GET** requests to the `/path` route.
+- `app.post('/path', handler)` responds to **POST** requests to the `/path` route.
+
+---
+
+### **Route Parameters**
+
+Express allows for dynamic route parameters, making routes more flexible and reusable. A route parameter is denoted by a colon (`:`) before the parameter name in the URL.
+
+#### **Example of Route Parameters**
+
+```javascript
+app.get('/users/:id', (req, res) => {
+    const userId = req.params.id;
+    res.send(`User ID: ${userId}`);
+});
+```
+
+In this example, the route `/users/:id` is dynamic, and the value passed for `id` in the URL is captured as a route parameter.
+
+- If a request is made to `/users/123`, the server will respond with `User ID: 123`.
+
+---
+
+### **Query Parameters**
+
+Query parameters are additional parameters passed in the URL, typically following the `?` symbol.
+
+#### **Example of Query Parameters**
+
+```javascript
+app.get('/search', (req, res) => {
+    const searchTerm = req.query.q;
+    res.send(`You searched for: ${searchTerm}`);
+});
+```
+
+If you visit `/search?q=Node.js`, the server will respond with `You searched for: Node.js`.
+
+---
+
+### **Route Handling Functions (Middleware)**
+
+Express allows you to define multiple functions to handle a request to a route. These functions are executed in sequence, which is known as **middleware**. Each middleware function has access to the request and response objects and can either terminate the request-response cycle or pass control to the next function.
+
+#### **Example of Multiple Handlers for a Route**
+
+```javascript
+app.get('/profile', (req, res, next) => {
+    console.log('First handler');
+    next(); // Passing control to the next middleware
+}, (req, res) => {
+    console.log('Second handler');
+    res.send('Profile Page');
+});
+```
+
+Here, two functions are defined for the `/profile` route. The first logs something to the console and then calls `next()`, passing control to the second handler, which sends the response.
+
+---
+
+### **Route Methods**
+
+Express provides route methods that correspond to HTTP methods. You can define different types of routes using these methods:
+
+#### **GET Route**
+
+```javascript
+app.get('/about', (req, res) => {
+    res.send('About Us');
+});
+```
+
+#### **POST Route**
+
+```javascript
+app.post('/submit', (req, res) => {
+    res.send('Form Submitted');
+});
+```
+
+#### **PUT Route**
+
+```javascript
+app.put('/update', (req, res) => {
+    res.send('Data Updated');
+});
+```
+
+#### **DELETE Route**
+
+```javascript
+app.delete('/delete', (req, res) => {
+    res.send('Data Deleted');
+});
+```
+
+---
+
+### **Route Chaining**
+
+You can chain multiple route methods to handle the same route for different HTTP methods.
+
+#### **Example of Route Chaining**
+
+```javascript
+app.route('/user')
+    .get((req, res) => {
+        res.send('Get User');
+    })
+    .post((req, res) => {
+        res.send('Create User');
+    })
+    .put((req, res) => {
+        res.send('Update User');
+    })
+    .delete((req, res) => {
+        res.send('Delete User');
+    });
+```
+
+In this example, all HTTP methods (`GET`, `POST`, `PUT`, `DELETE`) are chained for the `/user` route.
+
+---
+
+### **Route Wildcards**
+
+Express allows you to use wildcards in routes to handle multiple similar routes.
+
+#### **Example of Route Wildcard**
+
+```javascript
+app.get('/users/*', (req, res) => {
+    res.send('User Profile');
+});
+```
+
+In this example, any route starting with `/users/` will be matched, like `/users/123` or `/users/john`.
+
+---
+
+### **Route Groups (Router)**
+
+You can group related routes together using **express.Router()**. This is useful for organizing routes into logical modules.
+
+#### **Example of Using Router**
+
+```javascript
+const express = require('express');
+const router = express.Router();
+
+router.get('/products', (req, res) => {
+    res.send('All Products');
+});
+
+router.get('/products/:id', (req, res) => {
+    const productId = req.params.id;
+    res.send(`Product with ID: ${productId}`);
+});
+
+module.exports = router;
+```
+
+In the main application, you can import and use this router:
+
+```javascript
+const productRouter = require('./routes/products');
+app.use('/api', productRouter); // All routes will be prefixed with /api
+```
+
+Now, the routes will be accessible as `/api/products` and `/api/products/:id`.
+
+
+### **Error Handling Routes**
+
+You can define a route that catches all errors using a special middleware handler, usually placed at the end of all route definitions.
+
+#### **Example of Error Handling Route**
+
+```javascript
+app.use((req, res, next) => {
+    res.status(404).send('Page Not Found');
+});
+```
+
+This will catch all unmatched routes and send a `404` response.
+
+
+### **Summary**
+
+- **Routes** map specific paths and HTTP methods (GET, POST, etc.) to functions that define the behavior for those paths.
+- **Dynamic routes** can include parameters like `:id` or query parameters like `?q=value`.
+- Routes can be grouped using **express.Router()** for better organization.
+- **Middleware** functions can be used to process requests before they reach route handlers.
+- Express allows for **error handling** using a special route that catches unmatched routes.
+
+
+---
+
+
+## JWT
+
+### **JWT (JSON Web Token)**
+
+**JSON Web Token (JWT)** is an open standard (RFC 7519) used for securely transmitting information between parties as a JSON object. The information can be verified and trusted because it is digitally signed. JWTs are commonly used in web applications to handle authentication and authorization processes.
+
+---
+
+### **Structure of a JWT**
+
+A JWT consists of three parts, each separated by a dot (`.`):
+
+1. **Header**: Contains metadata about the token, like the signing algorithm (e.g., `HS256` or `RS256`).
+2. **Payload**: Contains the claims or the data. Claims are statements about an entity (typically, the user) and additional metadata.
+3. **Signature**: Ensures that the token hasn't been tampered with. It's created by signing the header and payload with a secret key or private key.
+
+The full JWT structure looks like this:
+```
+HEADER.PAYLOAD.SIGNATURE
+```
+
+#### Example JWT:
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+
+---
+
+### **1. Header**
+
+The header typically consists of two parts:
+- **alg** (Algorithm): The algorithm used to sign the token (e.g., `HS256` for HMAC SHA-256).
+- **typ** (Type): The type of the token, which is typically `JWT`.
+
+Example header (Base64 encoded):
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+
+---
+
+### **2. Payload**
+
+The payload contains the claims. There are three types of claims in the JWT:
+- **Registered claims**: Predefined claims, like `iss` (issuer), `exp` (expiration time), `sub` (subject), `aud` (audience), etc.
+- **Public claims**: Claims that are defined by the users and can be used to share information. These should be collision-resistant.
+- **Private claims**: Custom claims created to share information between parties that agree on them (e.g., user role, permissions).
+
+Example payload (Base64 encoded):
+```json
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}
+```
+
+---
+
+### **3. Signature**
+
+To create the signature part, you need to:
+- Take the encoded header and payload.
+- Apply a secret key (using the algorithm specified in the header) to sign it.
+
+For example, using HMAC SHA-256 (`HS256`):
+```javascript
+HMACSHA256(
+  base64UrlEncode(header) + "." + base64UrlEncode(payload),
+  secret)
+```
+
+This results in a signature that ensures the integrity and authenticity of the token. If the data is altered, the signature will no longer match.
+
+---
+
+### **JWT Flow (Authentication)**
+
+1. **User Login**:
+   - The user sends a login request (e.g., with a username and password).
+   - The server authenticates the user (by checking the credentials).
+   - Once authenticated, the server generates a JWT token with relevant information (e.g., user ID, expiration time).
+   - The JWT is sent back to the client (browser, mobile app).
+
+2. **User Accessing Protected Routes**:
+   - The client stores the JWT (commonly in the localStorage or cookies).
+   - For subsequent requests to protected routes, the client includes the JWT in the request header (`Authorization: Bearer <token>`).
+   
+3. **Server Validation**:
+   - The server validates the JWT in the `Authorization` header by decoding it and verifying the signature with the server's secret key.
+   - If valid, the server grants access to the protected resource. Otherwise, it returns an error (e.g., `401 Unauthorized`).
+
+---
+
+### **JWT Use Cases**
+
+1. **Authentication**: 
+   - After logging in, the server issues a JWT. The client uses this JWT to authenticate future requests. 
+   - The server verifies the JWT to authenticate the user.
+
+2. **Authorization**:
+   - After authentication, the JWT contains the user's role/permissions, allowing the server to authorize access to specific resources based on the user's role.
+
+3. **Single Sign-On (SSO)**:
+   - JWT can be used across multiple applications, allowing users to authenticate once and access various services without re-authenticating.
+
+---
+
+### **JWT Example in Node.js with Express**
+
+**1. Install Required Packages:**
+```bash
+npm install express jsonwebtoken dotenv
+```
+
+**2. Sample Code:**
+
+```javascript
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+// Initialize environment variables
+dotenv.config();
+
+// Initialize Express app
+const app = express();
+app.use(express.json());
+
+// Secret key for signing JWT (should be stored securely)
+const SECRET_KEY = process.env.JWT_SECRET;
+
+// Route to authenticate user and issue a token
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    // Example: Check user credentials (In real life, query database)
+    if (username === 'admin' && password === 'password123') {
+        // Create JWT token
+        const token = jwt.sign({ username: 'admin' }, SECRET_KEY, { expiresIn: '1h' });
+        return res.json({ token });
+    }
+    res.status(401).json({ message: 'Invalid credentials' });
+});
+
+// Middleware to protect routes
+const authenticateJWT = (req, res, next) => {
+    const token = req.header('Authorization')?.split(' ')[1];
+    
+    if (!token) {
+        return res.status(403).json({ message: 'Access denied' });
+    }
+    
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        req.user = user;
+        next(); // Proceed to the protected route
+    });
+};
+
+// Protected route that requires JWT for access
+app.get('/dashboard', authenticateJWT, (req, res) => {
+    res.send('Welcome to the Dashboard');
+});
+
+// Start the server
+app.listen(3000, () => {
+    console.log('Server started on port 3000');
+});
+```
+
+---
+
+### **JWT Advantages**
+
+1. **Compact**: JWT tokens are compact, meaning they can be sent as URL parameters, in HTTP headers, or in cookies.
+2. **Stateless**: Since JWTs contain the user data and are signed, no session is required on the server-side. This makes it easier to scale applications.
+3. **Cross-Domain Authentication**: JWT is useful for applications that need to authenticate users across different domains or services (SSO).
+
+
+### **JWT Expiration and Refresh Tokens**
+
+- **Expiration (`exp`)**: JWTs have an expiration time, which is set during token creation. After it expires, the token is no longer valid.
+- **Refresh Tokens**: When a JWT expires, a **refresh token** can be used to obtain a new JWT without re-authenticating the user.
+
+
+### **JWT Risks and Best Practices**
+
+1. **Token Storage**: Store JWT securely (e.g., in HTTPOnly cookies, not in localStorage) to prevent XSS attacks.
+2. **Short Expiration Time**: Set a reasonable expiration time for JWTs to minimize security risks.
+3. **Secure Transmission**: Always use **HTTPS** to transmit JWTs to avoid interception by attackers.
+
+
+### **Summary**
+
+- **JWT** is a compact and secure way of transmitting data (often used for authentication and authorization).
+- It consists of three parts: **Header**, **Payload**, and **Signature**.
+- JWTs are used in web applications for user authentication and authorization, offering statelessness and ease of scaling.
+- Use **HTTP headers** to send JWT tokens and validate them on the server for protected routes.
+
+---
+
+## Example (Optional)
+
+Here's a simple application that implements all the important topics, using Node.js, Express.js, Socket.io, Event Loop, the `fs` module, Middleware, Callbacks, Routes, and JWT.
+
+### **Step-by-Step Implementation**
+
+1. **Install Dependencies**:
+
+You will need the following npm packages:
+```bash
+npm init -y
+npm install express socket.io jsonwebtoken dotenv
+```
+
+2. **Application Structure**:
+
+```
+- app.js
+- routes/
+  - auth.js
+- models/
+  - user.js
+- public/
+  - index.html
+  - styles.css
+```
+
+### **app.js (Main Application)**
+
+```javascript
+const express = require('express');
+const socketIo = require('socket.io');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const fs = require('fs');
+const authRoute = require('./routes/auth');
+const app = express();
+
+// Load environment variables
+dotenv.config();
+
+// Middleware: Log each request
+app.use((req, res, next) => {
+    console.log(`${req.method} request made to: ${req.url}`);
+    next();
+});
+
+// Middleware to parse JSON
+app.use(express.json());
+
+// Serve static files (like index.html, styles.css)
+app.use(express.static('public'));
+
+// Use the authentication route
+app.use('/auth', authRoute);
+
+// Example of reading from a file using the fs module
+fs.readFile('public/index.html', 'utf8', (err, data) => {
+    if (err) throw err;
+    console.log('Read file:', data);
+});
+
+// Event Loop Simulation: Perform non-blocking operations
+setImmediate(() => {
+    console.log('This runs after I/O tasks, demonstrating event loop.');
+});
+
+// Socket.io setup for real-time communication
+const server = app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});
+
+const io = socketIo(server);
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    
+    socket.on('message', (data) => {
+        console.log('Message from client:', data);
+        socket.emit('response', 'Hello from the server!');
+    });
+});
+```
+
+### **routes/auth.js (Authentication Route)**
+
+```javascript
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
+
+// Secret key for JWT
+const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
+
+// Simulate a user login for JWT authentication
+router.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Example: Check user credentials (In real-life, query the database)
+    if (username === 'admin' && password === 'password123') {
+        // Create JWT token
+        const token = jwt.sign({ username: 'admin' }, SECRET_KEY, { expiresIn: '1h' });
+        return res.json({ token });
+    }
+    res.status(401).json({ message: 'Invalid credentials' });
+});
+
+// Middleware to verify JWT token
+router.use((req, res, next) => {
+    const token = req.header('Authorization')?.split(' ')[1];
+    if (!token) return res.status(403).json({ message: 'Access denied' });
+
+    jwt.verify(token, SECRET_KEY, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Invalid token' });
+        req.user = user;
+        next(); // Proceed to the protected route
+    });
+});
+
+// Example of a protected route
+router.get('/dashboard', (req, res) => {
+    res.json({ message: `Welcome to the Dashboard, ${req.user.username}!` });
+});
+
+module.exports = router;
+```
+
+### **models/user.js (Simulating a User Model)**
+
+```javascript
+// Simulating a simple User model
+module.exports = class User {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    save() {
+        return new Promise((resolve) => {
+            // Simulate saving the user data to a database
+            setTimeout(() => {
+                resolve({ name: this.name, age: this.age, id: Date.now() });
+            }, 1000);
+        });
+    }
+};
+```
+
+### **public/index.html (Client Side HTML)**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Welcome to the Node.js App</h1>
+    <button id="sendMessage">Send Message to Server</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        document.getElementById('sendMessage').addEventListener('click', () => {
+            socket.emit('message', 'Hello from the client!');
+        });
+
+        socket.on('response', (message) => {
+            alert(message);
+        });
+    </script>
+</body>
+</html>
+```
+
+### **public/styles.css (Client Side CSS)**
+
+```css
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+```
+
+### **.env (Environment Variables)**
+
+```
+JWT_SECRET=your-secure-secret-key
+```
+
+---
+
+### **What This Application Does:**
+
+1. **Express.js**: The application uses Express.js to set up routes, handle HTTP requests, and serve static files like `index.html` and `styles.css`.
+   
+2. **Socket.io**: The application creates a real-time communication channel between the server and client using Socket.io. When a user clicks the button on the webpage, a message is sent to the server, which responds with a message back to the client.
+
+3. **Event Loop**: Demonstrates a non-blocking, asynchronous operation using `setImmediate`, which prints a message after I/O operations are completed.
+
+4. **Fs Module**: Reads the `index.html` file from the file system asynchronously and prints the content to the console.
+
+5. **Middleware**: A middleware is used to log every incoming request, showing the HTTP method and URL path.
+
+6. **JWT**: The `/auth/login` route handles authentication by issuing a JWT token when valid credentials are provided. The `/auth/dashboard` route is a protected route that requires a valid JWT to access.
+
+7. **Callbacks**: Used within the `fs.readFile()` method to read the file asynchronously. Also, callbacks are used for JWT verification and in other asynchronous operations (e.g., saving a user).
+
+8. **Routes**: The routes are organized under the `/auth` path, handling both login and protected dashboard access using JWT.
+
+---
+
+### **How to Run the Application:**
+
+1. Ensure you have Node.js and npm installed.
+2. Install the dependencies:
+   ```bash
+   npm install express socket.io jsonwebtoken dotenv
+   ```
+3. Create the required files (app.js, routes/auth.js, models/user.js, public/index.html, public/styles.css).
+4. Run the server:
+   ```bash
+   node app.js
+   ```
+5. Open the browser and navigate to `http://localhost:3000`. You can log in with the credentials `admin` and `password123`, and then try accessing the protected route.
+
+---
+
+This application covers all the topics that were asked about, including how they fit together in a simple yet functional web application.
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================================================== -->
+
+
 # 2nd InSem 
 
 ### FS Module
