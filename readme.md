@@ -301,10 +301,6 @@ app.post('/add-user', (req, res) => {
 
 ## Socket.io
 
-
-### **Socket.IO: A Comprehensive Overview**
-
-**Definition**:  
 Socket.IO is a JavaScript library that enables real-time, bidirectional communication between web clients (browsers) and servers. It uses WebSockets as a transport protocol but falls back to other methods like long-polling when WebSockets are not available.
 
 ---
@@ -1728,7 +1724,6 @@ This will catch all unmatched routes and send a `404` response.
 
 ## JWT
 
-### **JWT (JSON Web Token)**
 
 **JSON Web Token (JWT)** is an open standard (RFC 7519) used for securely transmitting information between parties as a JSON object. The information can be verified and trusted because it is digitally signed. JWTs are commonly used in web applications to handle authentication and authorization processes.
 
