@@ -573,6 +573,8 @@ io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
 Socket.IO is a powerful library for real-time, bidirectional communication between clients and servers. It's easy to use and highly customizable, making it ideal for applications like live chat, gaming, or real-time collaboration tools. By leveraging its event-based model, broadcasting, and room functionalities, you can build scalable, real-time web applications with ease.
 
 
+---
+
 ## Events and event Loops
 
 JavaScript is often described as a non-blocking, asynchronous language. A key concept behind this is the **Event Loop**, which is responsible for handling asynchronous events in a single-threaded execution model. To understand this, we need to first explore what events are and how the event loop works.
@@ -1727,7 +1729,6 @@ This will catch all unmatched routes and send a `404` response.
 
 **JSON Web Token (JWT)** is an open standard (RFC 7519) used for securely transmitting information between parties as a JSON object. The information can be verified and trusted because it is digitally signed. JWTs are commonly used in web applications to handle authentication and authorization processes.
 
----
 
 ### **Structure of a JWT**
 
@@ -2176,7 +2177,7 @@ JWT_SECRET=your-secure-secret-key
 This application covers all the important topics, including how they fit together in a simple yet functional web application.
 
 
-
+---
 ---
 
 
@@ -2380,6 +2381,7 @@ myPromise
     .then(result => console.log(result))  // Success: logs "Operation successful!"
     .catch(error => console.log(error));  // Failure: logs "Operation failed!"
 ```
+---
 
 ## Async/Await
 
@@ -2462,6 +2464,8 @@ const fetchData = async () => {
 
 fetchData();
 ```
+
+---
 
 ## MongoDb (CRUD operations)
 
